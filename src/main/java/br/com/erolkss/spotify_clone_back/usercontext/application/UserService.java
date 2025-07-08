@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,6 +26,28 @@ public class UserService {
         OAuth2User principal = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = mapOauth2AttributesToUser(principal.getAttributes());
         return userMapper.readUserDTOToUser(user);
+    }
+
+    public void syncWithIdp(OAuth2User oAuth2User) {
+        Map<String, Object> attributes = oAuth2User.getAttributes();
+        User user = mapOauth2AttributesToUser(attributes);
+        Optional<User> existingUser = userRepository.findOneByEmail(user.getEmail());
+        if (existingUser.isPresent()) {
+            if (attributes.get("updated_at") != null) {
+                Instant dbLastModifiedDate = existingUser.orElseThrow().getLastModifiedDate();
+                Instant idpModifiedDate;
+                if (attributes.get("updated_at") instanceof Instant) {
+                    idpModifiedDate = (Instant) attributes.get("updated_at");
+                } else {
+                    idpModifiedDate = Instant.ofEpochSecond((Integer) attributes.get("updated_at"));
+                }
+                if (idpModifiedDate.isAfter(dbLastModifiedDate)) {
+                    updateUser(user);
+                }
+            }
+        } else {
+            userRepository.saveAndFlush(user);
+        }
     }
 
     private void updateUser(User user) {
