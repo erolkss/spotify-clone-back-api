@@ -1,8 +1,11 @@
 package br.com.erolkss.spotify_clone_back.usercontext.application;
 
+import br.com.erolkss.spotify_clone_back.usercontext.ReadUserDTO;
 import br.com.erolkss.spotify_clone_back.usercontext.domain.User;
 import br.com.erolkss.spotify_clone_back.usercontext.mapper.UserMapper;
 import br.com.erolkss.spotify_clone_back.usercontext.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -16,6 +19,12 @@ public class UserService {
     public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+    }
+
+    public ReadUserDTO getAuthenticatedUserFromSecurityContext() {
+        OAuth2User principal = (OAuth2User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = mapOauth2AttributesToUser(principal.getAttributes());
+        return userMapper.readUserDTOToUser(user);
     }
 
     private void updateUser(User user) {
