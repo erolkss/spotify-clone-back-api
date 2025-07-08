@@ -9,14 +9,14 @@ spring:
     active: dev
   application:
     name: spotify-clone-back
-datasource:
-  type: com.zaxxer.hikari.HikariDataSource
-  url: jdbc:postgresql://${postgres_url}:5432/${postgres_db}
-  username: ${postgres_username}
-  password: ${postgres_password}
-  hikari:
-    poolName: Hikari
-    auto-commit: false
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:postgresql://${POSTGRES_URL}:5432/${POSTGRES_DB}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+    hikari:
+      poolName: Hikari
+      auto-commit: false
   data:
     jpa:
       repositories:
