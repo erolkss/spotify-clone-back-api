@@ -6,6 +6,7 @@ import br.com.erolkss.spotify_clone_back.usercontext.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -15,6 +16,18 @@ public class UserService {
     public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+    }
+
+    private void updateUser(User user) {
+        Optional<User> userToUpdateOpt = userRepository.findOneByEmail(user.getEmail());
+        if (userToUpdateOpt.isPresent()) {
+            User userToUpdate = userToUpdateOpt.get();
+            userToUpdate.setEmail(user.getEmail());
+            userToUpdate.setImageUrl(user.getImageUrl());
+            userToUpdate.setLastName(user.getLastName());
+            userToUpdate.setFirstName(user.getFirstName());
+            userRepository.saveAndFlush(userToUpdate);
+        }
     }
 
     private User mapOauth2AttributesToUser(Map<String, Object> attributes) {
