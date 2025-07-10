@@ -11,6 +11,8 @@ import br.com.erolkss.spotify_clone_back.catalogcontext.repository.SongRepositor
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class SongService {
@@ -19,7 +21,6 @@ public class SongService {
     private final SongRepository songRepository;
     private final SongContentMapper songContentMapper;
     private final SongContentRepository songContentRepository;
-
     public SongService(SongMapper songMapper, SongRepository songRepository, SongContentMapper songContentMapper, SongContentRepository songContentRepository) {
         this.songMapper = songMapper;
         this.songRepository = songRepository;
@@ -36,5 +37,13 @@ public class SongService {
 
         songContentRepository.save(songContent);
         return songMapper.songToReadSongInfoDTO(songSaved);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReadSongInfoDTO> getAll() {
+        return songRepository.findAll()
+                .stream()
+                .map(songMapper::songToReadSongInfoDTO)
+                .toList();
     }
 }
