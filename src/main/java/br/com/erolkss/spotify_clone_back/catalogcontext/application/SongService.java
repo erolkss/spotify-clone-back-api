@@ -9,8 +9,10 @@ import br.com.erolkss.spotify_clone_back.catalogcontext.domain.SongContent;
 import br.com.erolkss.spotify_clone_back.catalogcontext.repository.SongContentRepository;
 import br.com.erolkss.spotify_clone_back.catalogcontext.repository.SongRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class SongService {
 
     private final SongMapper songMapper;
