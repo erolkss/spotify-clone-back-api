@@ -5,8 +5,8 @@ import br.com.erolkss.spotify_clone_back.catalogcontext.application.vo.SongTitle
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
-public record SaveSongDTO(@Valid SongTitleVO songTitleVO,
-                          @Valid SongAuthorVO songAuthorVO,
+public record SaveSongDTO(@Valid SongTitleVO title,
+                          @Valid SongAuthorVO author,
                           @NotNull byte[] cover,
                           @NotNull String coverContentType,
                           @NotNull byte[] file,
