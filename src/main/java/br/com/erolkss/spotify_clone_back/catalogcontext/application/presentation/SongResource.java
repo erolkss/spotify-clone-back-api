@@ -3,6 +3,7 @@ package br.com.erolkss.spotify_clone_back.catalogcontext.application.presentatio
 import br.com.erolkss.spotify_clone_back.catalogcontext.application.SongService;
 import br.com.erolkss.spotify_clone_back.catalogcontext.application.dto.ReadSongInfoDTO;
 import br.com.erolkss.spotify_clone_back.catalogcontext.application.dto.SaveSongDTO;
+import br.com.erolkss.spotify_clone_back.catalogcontext.application.dto.SongContentDTO;
 import br.com.erolkss.spotify_clone_back.usercontext.application.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ConstraintViolation;
@@ -16,7 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -62,6 +65,13 @@ public class SongResource {
     @GetMapping("/songs")
     public ResponseEntity<List<ReadSongInfoDTO>> getAll() {
         return ResponseEntity.ok(songService.getAll());
+    }
+
+    @GetMapping("/songs/get-content")
+    public ResponseEntity<SongContentDTO> getOneByPublicId(@RequestParam UUID publicId) {
+        Optional<SongContentDTO> songContentByPublicId = songService.getOneByPublicId(publicId);
+        return songContentByPublicId.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "UUID Unknown")).build());
     }
 
 }
