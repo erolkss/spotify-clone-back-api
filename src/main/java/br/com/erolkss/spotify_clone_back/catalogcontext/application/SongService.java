@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -24,6 +25,7 @@ public class SongService {
     private final SongRepository songRepository;
     private final SongContentMapper songContentMapper;
     private final SongContentRepository songContentRepository;
+
     public SongService(SongMapper songMapper, SongRepository songRepository, SongContentMapper songContentMapper, SongContentRepository songContentRepository) {
         this.songMapper = songMapper;
         this.songRepository = songRepository;
@@ -53,5 +55,12 @@ public class SongService {
     public Optional<SongContentDTO> getOneByPublicId(UUID publicId) {
         Optional<SongContent> songByPublicId = songContentRepository.findOneBySongPublicId(publicId);
         return songByPublicId.map(songContentMapper::songContentToSongContentDTO);
+    }
+
+    public List<ReadSongInfoDTO> search(String searchTerm) {
+        return songRepository.findByTitleOrAuthorContaining(searchTerm)
+                .stream()
+                .map(songMapper::songToReadSongInfoDTO)
+                .collect(Collectors.toList());
     }
 }
