@@ -28,7 +28,7 @@
 ## Uso
 ### Pré-requisitos
 - [JDK 21](https://adoptium.net/temurin/releases/)
-- IDE (WebStorm 2025.1)
+- IDE (WebStorm 2025.1, Intellij 2024.3)
 - [PostgreSQL](https://www.postgresql.org/download/)
 
 ### Clonar o repositório
