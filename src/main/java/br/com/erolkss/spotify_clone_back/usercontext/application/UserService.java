@@ -102,4 +102,7 @@ public class UserService {
         return oneByEmail.map(userMapper::readUserDTOToUser);
     }
 
+    public boolean isAuthenticated() {
+        return !SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser");
+    }
 }
